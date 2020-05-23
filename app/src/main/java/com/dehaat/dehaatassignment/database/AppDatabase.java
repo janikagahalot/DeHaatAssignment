@@ -6,8 +6,13 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {},version = 1)
+import com.dehaat.dehaatassignment.dao.AuthorDao;
+import com.dehaat.dehaatassignment.model.Author;
+
+@Database(entities = {Author.class},version = 1)
 public abstract class AppDatabase extends RoomDatabase {
+
+    public abstract AuthorDao authorDao();
 
     private static volatile AppDatabase INSTANCE;
 
@@ -22,5 +27,4 @@ public abstract class AppDatabase extends RoomDatabase {
         }
         return INSTANCE;
     }
-
 }
