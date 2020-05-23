@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.dehaat.dehaatassignment.R;
 
-public class AuthorDetailFragment extends Fragment {
+public class BookFragment extends Fragment {
 
     @Nullable
     @Override
