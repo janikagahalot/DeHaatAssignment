@@ -1,5 +1,6 @@
 package com.dehaat.dehaatassignment.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -13,7 +14,7 @@ import java.util.List;
 public interface AuthorDao {
 
     @Query("SELECT * from author_table")
-    List<Author> getAuthorList();
+    LiveData<List<Author>> getAuthorList();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Author author);

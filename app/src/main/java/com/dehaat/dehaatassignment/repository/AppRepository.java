@@ -8,19 +8,20 @@ import com.dehaat.dehaatassignment.dao.AuthorDao;
 import com.dehaat.dehaatassignment.database.AppDatabase;
 import com.dehaat.dehaatassignment.model.Author;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AppRepository {
 
 
     private AuthorDao authorDao;
-    private List<Author> authorList;
+    private LiveData<List<Author>> authorList;
 
     // Note that in order to unit test the WordRepository, you have to remove the Application
     // dependency. This adds complexity and much more code, and this sample is not about testing.
     // See the BasicSample in the android-architecture-components repository at
     // https://github.com/googlesamples
-    AppRepository(Application application) {
+    public AppRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
         authorDao = db.authorDao();
         authorList = authorDao.getAuthorList();
@@ -28,7 +29,7 @@ public class AppRepository {
 
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
-    List<Author> getAllAuthors() {
+    public LiveData<List<Author>> getAllAuthors() {
         return authorList;
     }
 

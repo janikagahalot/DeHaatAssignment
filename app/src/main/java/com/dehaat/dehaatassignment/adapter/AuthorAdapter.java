@@ -22,9 +22,8 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AuthorView
     private List<Author> data;
     private AuthorListFragment.AuthorClickListener mListener;
 
-    public AuthorAdapter(Context context, List<Author> authorList, AuthorListFragment.AuthorClickListener listener) {
+    public AuthorAdapter(Context context, AuthorListFragment.AuthorClickListener listener) {
         this.mContext = context;
-        this.data = authorList;
         this.mListener = listener;
     }
 
@@ -42,7 +41,12 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AuthorView
 
     @Override
     public int getItemCount() {
-        return data != null? data.size() : 0;
+        return data != null ? data.size() : 0;
+    }
+
+    public void setData(List<Author> authorList) {
+        this.data = authorList;
+        notifyDataSetChanged();
     }
 
     class AuthorViewHolder extends RecyclerView.ViewHolder {
@@ -56,10 +60,20 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AuthorView
             this.mListener = listener;
             authorName = itemView.findViewById(R.id.name);
             authorBio = itemView.findViewById(R.id.bio);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        mListener.onClickAuthor();
+                    }
+                }
+            });
         }
 
         void fillView(Author author) {
-            if(author == null) return;
+            if (author == null) return;
+            authorName.setText(author.getAuthorName());
+            authorBio.setText(author.getAuthorBio());
         }
     }
 }
