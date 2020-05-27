@@ -43,18 +43,6 @@ public abstract class AppDatabase extends RoomDatabase {
         @Override
         public void onOpen(@NonNull SupportSQLiteDatabase db) {
             super.onOpen(db);
-
-            databaseWriteExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    AuthorDao dao = INSTANCE.authorDao();
-
-                    Author word = new Author("Paulo Coelho", "Paulo ");
-                    dao.insert(word);
-                    Author author = new Author("Paulo Coelho 2", "Paulo ");
-                    dao.insert(author);
-                }
-            });
         }
     };
 }

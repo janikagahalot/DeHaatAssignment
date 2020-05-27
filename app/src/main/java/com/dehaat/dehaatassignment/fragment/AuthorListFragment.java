@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,9 +20,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dehaat.dehaatassignment.R;
 import com.dehaat.dehaatassignment.adapter.AuthorAdapter;
 import com.dehaat.dehaatassignment.model.Author;
+import com.dehaat.dehaatassignment.model.AuthorsResponse;
+import com.dehaat.dehaatassignment.rest.AppRestClient;
+import com.dehaat.dehaatassignment.rest.AppRestClientService;
 import com.dehaat.dehaatassignment.viewmodel.AuthorViewModel;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AuthorListFragment extends Fragment {
 

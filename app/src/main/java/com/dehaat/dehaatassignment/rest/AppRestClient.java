@@ -47,10 +47,14 @@ public class AppRestClient {
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("") //ToDo: enter base url
+                .baseUrl("https://1d3ad1ca-cc69-4be5-828b-7c7977b8d1f3.mock.pstmn.io") //ToDo: enter base url
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
         appRestClientService = retrofit.create(AppRestClientService.class);
+    }
+
+    public AppRestClientService getAppRestClientService() {
+        return appRestClientService;
     }
 }

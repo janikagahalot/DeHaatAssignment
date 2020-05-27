@@ -1,6 +1,7 @@
 package com.dehaat.dehaatassignment.rest;
 
 import com.dehaat.dehaatassignment.model.Author;
+import com.dehaat.dehaatassignment.model.AuthorsResponse;
 import com.google.gson.JsonElement;
 
 import java.util.List;
@@ -15,6 +16,6 @@ public interface AppRestClientService {
     Call<JsonElement> login();
 
     @GET("/dehaat/authors")
-    Call<JsonElement> getListOfAuthors();
+    Call<AuthorsResponse> getListOfAuthors();
 
 }

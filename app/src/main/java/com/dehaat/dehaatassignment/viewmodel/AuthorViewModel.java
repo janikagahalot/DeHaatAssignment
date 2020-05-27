@@ -22,7 +22,7 @@ public class AuthorViewModel extends AndroidViewModel {
         super(application);
 
         repository = new AppRepository(application);
-        authorList = repository.getAllAuthors();
+        authorList = repository.getAuthorList();
     }
 
     public LiveData<List<Author>> getAuthorList() {
