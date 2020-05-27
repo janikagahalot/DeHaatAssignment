@@ -54,6 +54,7 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AuthorView
         private AuthorListFragment.AuthorClickListener mListener;
         private TextView authorName;
         private TextView authorBio;
+        private String name;
 
         AuthorViewHolder(@NonNull View itemView, AuthorListFragment.AuthorClickListener listener) {
             super(itemView);
@@ -63,8 +64,8 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AuthorView
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mListener != null) {
-                        mListener.onClickAuthor();
+                    if (mListener != null && name != null) {
+                        mListener.onClickAuthor(name);
                     }
                 }
             });
@@ -72,6 +73,7 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AuthorView
 
         void fillView(Author author) {
             if (author == null) return;
+            this.name = author.getAuthorName();
             authorName.setText(author.getAuthorName());
             authorBio.setText(author.getAuthorBio());
         }

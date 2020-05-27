@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,9 +19,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BooksViewHolde
     private Context mContext;
     private List<Book> data;
 
-    public BookAdapter(Context context, List<Book> books) {
+    public BookAdapter(Context context) {
         this.mContext = context;
-        this.data = books;
     }
 
     @NonNull
@@ -35,19 +35,31 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BooksViewHolde
         holder.fillView(data.get(position));
     }
 
+    public void setData(List<Book> bookList) {
+        this.data = bookList;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
-        return data != null? data.size() : 0;
+        return data != null ? data.size() : 0;
     }
 
     class BooksViewHolder extends RecyclerView.ViewHolder {
 
+        private TextView title;
+        private TextView description;
+
         public BooksViewHolder(@NonNull View itemView) {
             super(itemView);
+            title = itemView.findViewById(R.id.title);
+            description = itemView.findViewById(R.id.description);
         }
 
         public void fillView(Book book) {
-            if(book == null) return;
+            if (book == null) return;
+            title.setText(book.getTitle());
+            description.setText(book.getDescription());
         }
     }
 }

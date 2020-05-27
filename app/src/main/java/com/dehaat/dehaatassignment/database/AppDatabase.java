@@ -9,15 +9,19 @@ import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.dehaat.dehaatassignment.dao.AuthorDao;
+import com.dehaat.dehaatassignment.dao.BookDao;
 import com.dehaat.dehaatassignment.model.Author;
+import com.dehaat.dehaatassignment.model.Book;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Author.class}, version = 1, exportSchema = false)
+@Database(entities = {Author.class, Book.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract AuthorDao authorDao();
+
+    public abstract BookDao bookDao();
 
     private static volatile AppDatabase INSTANCE;
     public static final ExecutorService databaseWriteExecutor =
@@ -38,11 +42,24 @@ public abstract class AppDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
+    private static void deleteData() {
+        AuthorDao dao = INSTANCE.authorDao();
+        BookDao bookDao = INSTANCE.bookDao();
+        dao.deleteAll();
+        bookDao.deleteAll();
+    }
+
 
     private static RoomDatabase.Callback roomDatabaseCallback = new RoomDatabase.Callback() {
         @Override
         public void onOpen(@NonNull SupportSQLiteDatabase db) {
             super.onOpen(db);
+            databaseWriteExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    deleteData();
+                }
+            });
         }
     };
 }

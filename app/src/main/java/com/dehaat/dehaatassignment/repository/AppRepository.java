@@ -4,7 +4,6 @@ import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.dehaat.dehaatassignment.dao.AuthorDao;
@@ -13,6 +12,7 @@ import com.dehaat.dehaatassignment.database.AppDatabase;
 import com.dehaat.dehaatassignment.model.Author;
 import com.dehaat.dehaatassignment.model.AuthorBookDetailResponse;
 import com.dehaat.dehaatassignment.model.AuthorsResponse;
+import com.dehaat.dehaatassignment.model.Book;
 import com.dehaat.dehaatassignment.rest.AppRestClient;
 import com.dehaat.dehaatassignment.rest.AppRestClientService;
 
@@ -30,12 +30,14 @@ public class AppRepository {
     private BookDao bookDao;
     private AppRestClientService appRestClientService;
     private MediatorLiveData<List<Author>> resultAuthorList = new MediatorLiveData<>();
+    private MediatorLiveData<List<Book>> resultBookList = new MediatorLiveData<>();
 
 
     public AppRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
         appRestClientService = AppRestClient.getInstance().getAppRestClientService();
         authorDao = db.authorDao();
+        bookDao = db.bookDao();
         fetchAuthors();
     }
 
@@ -102,15 +104,36 @@ public class AppRepository {
             public void run() {
                 List<Author> authors = new ArrayList<>();
                 for (int i = 0; i < dataList.size(); i++) {
-                    authors.add(new Author(dataList.get(i).getAuthorName(), dataList.get(i).getAuthorBio()));
+                    String name = dataList.get(i).getAuthorName();
+                    authors.add(new Author(name, dataList.get(i).getAuthorBio()));
+                    saveBooksData(name, dataList.get(i).getBooks());
                 }
                 authorDao.insertAll(authors);
             }
         });
     }
 
+    private void saveBooksData(String name, List<Book> books) {
+        if (books == null || books.size() == 0) return;
+        for (int i = 0; i < books.size(); i++) {
+            Book book = books.get(i);
+            book.setAuthorName(name);
+            bookDao.insert(book);
+        }
+    }
+
 
     public LiveData<List<Author>> getAuthorList() {
         return resultAuthorList;
+    }
+
+    public LiveData<List<Book>> getBookList(String authorName) {
+        resultBookList.addSource(bookDao.getBookList(authorName), new Observer<List<Book>>() {
+            @Override
+            public void onChanged(List<Book> books) {
+                resultBookList.setValue(books);
+            }
+        });
+        return resultBookList;
     }
 }
