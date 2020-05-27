@@ -49,17 +49,28 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BooksViewHolde
 
         private TextView title;
         private TextView description;
+        private TextView publisher;
+        private TextView publisherData;
+        private TextView price;
 
         public BooksViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
+            publisher = itemView.findViewById(R.id.publisher);
+            publisherData = itemView.findViewById(R.id.publisher_data);
+            price = itemView.findViewById(R.id.price);
+
         }
 
         public void fillView(Book book) {
             if (book == null) return;
-            title.setText(book.getTitle());
-            description.setText(book.getDescription());
+            mContext = itemView.getContext();
+            title.setText(mContext.getString(R.string.title, book.getTitle()));
+            description.setText(mContext.getString(R.string.description, book.getDescription()));
+            publisher.setText(mContext.getString(R.string.publisher, book.getPublisher()));
+            publisherData.setText(mContext.getString(R.string.publisher_detail, book.getPublished_date()));
+            price.setText(mContext.getString(R.string.price, String.valueOf(book.getPrice())));
         }
     }
 }

@@ -4,4 +4,9 @@
     <string name="password">Password</string>
     <string name="dehaat">DeHaat</string>
     <string name="login">Login</string>
+    <string name="title">Title: %s</string>
+    <string name="description">Description: %s</string>
+    <string name="publisher">Publisher: %s</string>
+    <string name="publisher_detail">Publisher Detail: %s</string>
+    <string name="price">Price: Rs %s</string>
 </resources>
