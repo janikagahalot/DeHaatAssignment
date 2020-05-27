@@ -15,6 +15,7 @@ import com.dehaat.dehaatassignment.model.AuthorsResponse;
 import com.dehaat.dehaatassignment.model.Book;
 import com.dehaat.dehaatassignment.rest.AppRestClient;
 import com.dehaat.dehaatassignment.rest.AppRestClientService;
+import com.dehaat.dehaatassignment.util.AppExecutors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class AppRepository {
     private AuthorDao authorDao;
     private BookDao bookDao;
     private AppRestClientService appRestClientService;
+    private AppExecutors appExecutors;
     private MediatorLiveData<List<Author>> resultAuthorList = new MediatorLiveData<>();
     private MediatorLiveData<List<Book>> resultBookList = new MediatorLiveData<>();
 
@@ -36,6 +38,7 @@ public class AppRepository {
     public AppRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
         appRestClientService = AppRestClient.getInstance().getAppRestClientService();
+        appExecutors = AppExecutors.getInstance();
         authorDao = db.authorDao();
         bookDao = db.bookDao();
         fetchAuthors();
@@ -84,22 +87,31 @@ public class AppRepository {
     }
 
     private void processFetchedData(AuthorsResponse authorsResponse) {
-        List<AuthorBookDetailResponse> dataList = authorsResponse.data;
+        final List<AuthorBookDetailResponse> dataList = authorsResponse.data;
         if (dataList != null && dataList.size() > 0) {
-            saveDataInDb(dataList);
-
-            resultAuthorList.addSource(loadDataFromDb(), new Observer<List<Author>>() {
+            appExecutors.backgroundExecutor().execute(new Runnable() {
                 @Override
-                public void onChanged(List<Author> authorList) {
-                    resultAuthorList.setValue(authorList);
+                public void run() {
+                    saveDataInDb(dataList);
+
+                    appExecutors.mainThread().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            resultAuthorList.addSource(loadDataFromDb(), new Observer<List<Author>>() {
+                                @Override
+                                public void onChanged(List<Author> authorList) {
+                                    resultAuthorList.setValue(authorList);
+                                }
+                            });
+                        }
+                    });
                 }
             });
-
         }
     }
 
     private void saveDataInDb(final List<AuthorBookDetailResponse> dataList) {
-        AppDatabase.databaseWriteExecutor.execute(new Runnable() {
+        appExecutors.backgroundExecutor().execute(new Runnable() {
             @Override
             public void run() {
                 List<Author> authors = new ArrayList<>();

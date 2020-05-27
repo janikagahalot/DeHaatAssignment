@@ -1,6 +1,8 @@
 package com.dehaat.dehaatassignment.database;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
@@ -12,7 +14,9 @@ import com.dehaat.dehaatassignment.dao.AuthorDao;
 import com.dehaat.dehaatassignment.dao.BookDao;
 import com.dehaat.dehaatassignment.model.Author;
 import com.dehaat.dehaatassignment.model.Book;
+import com.dehaat.dehaatassignment.util.AppExecutors;
 
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -24,8 +28,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract BookDao bookDao();
 
     private static volatile AppDatabase INSTANCE;
-    public static final ExecutorService databaseWriteExecutor =
-            Executors.newFixedThreadPool(4);
 
     public static AppDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
@@ -54,7 +56,7 @@ public abstract class AppDatabase extends RoomDatabase {
         @Override
         public void onOpen(@NonNull SupportSQLiteDatabase db) {
             super.onOpen(db);
-            databaseWriteExecutor.execute(new Runnable() {
+            AppExecutors.getInstance().backgroundExecutor().execute(new Runnable() {
                 @Override
                 public void run() {
                     deleteData();
@@ -62,4 +64,5 @@ public abstract class AppDatabase extends RoomDatabase {
             });
         }
     };
+
 }
