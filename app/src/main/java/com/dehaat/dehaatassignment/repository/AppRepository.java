@@ -148,4 +148,14 @@ public class AppRepository {
         });
         return resultBookList;
     }
+
+    public void clearDatabase() {
+        appExecutors.backgroundExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                authorDao.deleteAll();
+                bookDao.deleteAll();
+            }
+        });
+    }
 }

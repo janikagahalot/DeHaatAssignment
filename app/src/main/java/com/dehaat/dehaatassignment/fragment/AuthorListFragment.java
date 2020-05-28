@@ -75,6 +75,10 @@ public class AuthorListFragment extends Fragment {
 
     }
 
+    public void clearDatabase() {
+        mViewModel.clearDatabase();
+    }
+
     public interface AuthorClickListener {
         void onClickAuthor(String authorName);
     }

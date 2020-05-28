@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import com.dehaat.dehaatassignment.R;
 import com.dehaat.dehaatassignment.fragment.AuthorListFragment;
@@ -17,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String USER_PREF = "userPref";
     public static final int LOGIN_COMPLETED = 10;
+
+    private TextView logoutTextView;
 
 
     @Override
@@ -36,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
+        logoutTextView = findViewById(R.id.tv_logout);
         SharedPreferences prefs = getSharedPreferences(USER_PREF, MODE_PRIVATE);
         String authToken = prefs.getString("auth_token", null);//"No name defined" is the default value.
         if (authToken == null) {
@@ -43,6 +48,13 @@ public class MainActivity extends AppCompatActivity {
         } else {
             openAuthorList();
         }
+
+        logoutTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logout();
+            }
+        });
     }
 
     private void openLoginActivity() {
@@ -61,11 +73,47 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commitAllowingStateLoss();
     }
 
+    public void addFragment(Fragment fragment, int id, boolean addToBackStack, String backStackName) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(id, fragment, backStackName);
+        if (addToBackStack) {
+            fragmentTransaction.addToBackStack(backStackName);
+        }
+        fragmentTransaction.commitAllowingStateLoss();
+    }
+
     private void openAuthorList() {
-        replaceFragment(new AuthorListFragment(), R.id.content_frame, true, "list");
+        addFragment(new AuthorListFragment(), R.id.content_frame, false, "list");
     }
 
     public void logout() {
+        deleteAuthToken();
+        clearDatabase();
+        clearBackStack();
+        openLoginActivity();
+    }
 
+    private void clearDatabase() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        //String fragmentTag = fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 1).getName();
+        AuthorListFragment resultsFragment = (AuthorListFragment) fragmentManager.findFragmentByTag("list");
+        if (resultsFragment != null && resultsFragment.isAdded()) {
+            resultsFragment.clearDatabase();
+        }
+    }
+
+    private void clearBackStack() {
+        try {
+            getSupportFragmentManager()
+                    .popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        } catch (Exception e) {
+        }
+    }
+
+    private void deleteAuthToken() {
+        SharedPreferences.Editor editor = getSharedPreferences(MainActivity.USER_PREF, MODE_PRIVATE).edit();
+        editor.putString("auth_token", null);
+        editor.apply();
     }
 }

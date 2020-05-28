@@ -29,6 +29,10 @@ public class AuthorViewModel extends AndroidViewModel {
         return authorList;
     }
 
+    public void clearDatabase() {
+        repository.clearDatabase();
+    }
+
     public static class Factory extends ViewModelProvider.AndroidViewModelFactory {
 
         @NonNull
