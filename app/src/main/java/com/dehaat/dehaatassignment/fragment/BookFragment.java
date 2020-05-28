@@ -24,6 +24,7 @@ import java.util.List;
 
 public class BookFragment extends Fragment {
 
+    public static final String FRAGMENT_NAME = "book";
     private RecyclerView mRecyclerView;
     private BookAdapter mAdapter;
     private Context mContext;

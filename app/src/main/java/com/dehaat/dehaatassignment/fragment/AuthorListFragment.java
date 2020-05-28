@@ -25,6 +25,7 @@ import java.util.List;
 
 public class AuthorListFragment extends Fragment {
 
+    public static final String FRAGMENT_NAME = "list";
     private RecyclerView mRecyclerView;
     private AuthorAdapter mAdapter;
     private Context mContext;
@@ -71,7 +72,7 @@ public class AuthorListFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putString("author_name", authorName);
         fragment.setArguments(bundle);
-        ((MainActivity) mContext).replaceFragment(fragment, R.id.content_frame, true, "book");
+        ((MainActivity) mContext).replaceFragment(fragment, R.id.content_frame, true, BookFragment.FRAGMENT_NAME);
 
     }
 

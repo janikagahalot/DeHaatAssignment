@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openAuthorList() {
-        addFragment(new AuthorListFragment(), R.id.content_frame, false, "list");
+        addFragment(new AuthorListFragment(), R.id.content_frame, false, AuthorListFragment.FRAGMENT_NAME);
     }
 
     public void logout() {
@@ -96,8 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void clearDatabase() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        //String fragmentTag = fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 1).getName();
-        AuthorListFragment resultsFragment = (AuthorListFragment) fragmentManager.findFragmentByTag("list");
+        AuthorListFragment resultsFragment = (AuthorListFragment) fragmentManager.findFragmentByTag(AuthorListFragment.FRAGMENT_NAME);
         if (resultsFragment != null && resultsFragment.isAdded()) {
             resultsFragment.clearDatabase();
         }
@@ -111,6 +110,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /*
+      Removes the auth token and logs out the user
+     */
     private void deleteAuthToken() {
         SharedPreferences.Editor editor = getSharedPreferences(MainActivity.USER_PREF, MODE_PRIVATE).edit();
         editor.putString("auth_token", null);
