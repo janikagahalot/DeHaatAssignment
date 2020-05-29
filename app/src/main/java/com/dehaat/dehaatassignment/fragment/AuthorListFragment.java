@@ -19,6 +19,7 @@ import com.dehaat.dehaatassignment.R;
 import com.dehaat.dehaatassignment.activity.MainActivity;
 import com.dehaat.dehaatassignment.adapter.AuthorAdapter;
 import com.dehaat.dehaatassignment.model.Author;
+import com.dehaat.dehaatassignment.util.FragmentActionListener;
 import com.dehaat.dehaatassignment.viewmodel.AuthorViewModel;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class AuthorListFragment extends Fragment {
     private AuthorAdapter mAdapter;
     private Context mContext;
     private AuthorViewModel mViewModel;
+    private FragmentActionListener fragmentActionListener;
 
     @Nullable
     @Override
@@ -40,6 +42,9 @@ public class AuthorListFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            fragmentActionListener = (MainActivity) getActivity();
+        }
         initViews();
     }
 
@@ -48,13 +53,7 @@ public class AuthorListFragment extends Fragment {
         mViewModel = new ViewModelProvider(this, new AuthorViewModel.Factory((Application) mContext.getApplicationContext())).get(AuthorViewModel.class);
         mRecyclerView = getView().findViewById(R.id.rv_author);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        mAdapter = new AuthorAdapter(mContext, new AuthorClickListener() {
-
-            @Override
-            public void onClickAuthor(String authorName) {
-                openBookActivity(authorName);
-            }
-        });
+        mAdapter = new AuthorAdapter(mContext, fragmentActionListener);
         mRecyclerView.setAdapter(mAdapter);
 
 
@@ -62,22 +61,20 @@ public class AuthorListFragment extends Fragment {
             @Override
             public void onChanged(@Nullable final List<Author> words) {
                 // Update the cached copy of the author in the adapter.
+                if(words != null && words.size() > 0) {
+                    fragmentActionListener.setDefaultAuthorName(words.get(0).getAuthorName());
+                }
                 mAdapter.setData(words);
             }
         });
     }
 
-    private void openBookActivity(String authorName) {
-        BookFragment fragment = new BookFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("author_name", authorName);
-        fragment.setArguments(bundle);
-        ((MainActivity) mContext).replaceFragment(fragment, R.id.content_frame, true, BookFragment.FRAGMENT_NAME);
-
-    }
-
     public void clearDatabase() {
         mViewModel.clearDatabase();
+    }
+
+    public void setFragmentActionListener(FragmentActionListener fragmentActionListener) {
+        this.fragmentActionListener = fragmentActionListener;
     }
 
     public interface AuthorClickListener {

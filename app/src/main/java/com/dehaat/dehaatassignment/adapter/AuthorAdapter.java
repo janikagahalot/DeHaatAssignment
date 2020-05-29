@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dehaat.dehaatassignment.R;
 import com.dehaat.dehaatassignment.fragment.AuthorListFragment;
 import com.dehaat.dehaatassignment.model.Author;
+import com.dehaat.dehaatassignment.util.FragmentActionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +21,9 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AuthorView
 
     private Context mContext;
     private List<Author> data;
-    private AuthorListFragment.AuthorClickListener mListener;
+    private FragmentActionListener mListener;
 
-    public AuthorAdapter(Context context, AuthorListFragment.AuthorClickListener listener) {
+    public AuthorAdapter(Context context, FragmentActionListener listener) {
         this.mContext = context;
         this.mListener = listener;
     }
@@ -51,12 +52,12 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AuthorView
 
     class AuthorViewHolder extends RecyclerView.ViewHolder {
 
-        private AuthorListFragment.AuthorClickListener mListener;
+        private FragmentActionListener mListener;
         private TextView authorName;
         private TextView authorBio;
         private String name;
 
-        AuthorViewHolder(@NonNull View itemView, AuthorListFragment.AuthorClickListener listener) {
+        AuthorViewHolder(@NonNull View itemView, FragmentActionListener listener) {
             super(itemView);
             this.mListener = listener;
             authorName = itemView.findViewById(R.id.name);
@@ -65,7 +66,7 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AuthorView
                 @Override
                 public void onClick(View v) {
                     if (mListener != null && name != null) {
-                        mListener.onClickAuthor(name);
+                        mListener.onAuthorClicked(name);
                     }
                 }
             });
